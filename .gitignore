@@ -1,0 +1,11 @@
+# vscode cache
+.vscode
+
+# jetbrains cache
+.idea/
+
+# builded binary of main.go
+main
+
+# system cache
+.DS_Store
