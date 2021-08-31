@@ -1,5 +1,6 @@
 package osutil
 
+// imports
 import (
 	"log"
 	"net"
@@ -10,7 +11,7 @@ import (
 	"github.com/songgao/water"
 )
 
-func ConfigVpn(cidr string, iface *water.Interface) {
+func ConfigTun(cidr string, iface *water.Interface) {
 	os := runtime.GOOS
 	ip, ipNet, err := net.ParseCIDR(cidr)
 	if err != nil {
@@ -29,5 +30,16 @@ func ConfigVpn(cidr string, iface *water.Interface) {
 		log.Printf("open new cmd and enter:netsh interface ip set address name=\"%v\" source=static addr=%v mask=%v gateway=none", iface.Name(), ip.String(), ipNet.Mask.String())
 	} else {
 		log.Printf("not support os:%v", os)
+	}
+}
+
+func execCmd(c string, args ...string) {
+	cmd := exec.Command(c, args...)
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalln("failed to exec /sbin/ip error:", err)
 	}
 }
