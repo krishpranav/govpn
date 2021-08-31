@@ -13,7 +13,7 @@ $ git clone https://github.com/krishpranav/govpn
 Usage of ./main:
   -S    server mode
   -c string
-        tun interface CIDR (default "172.16.0.1/24")
+        vpn interface CIDR (default "172.16.0.1/24")
   -k string
         encryption key (default "S#Q#FBSDAE#%!@#!@#%!NDADSA")
   -p string

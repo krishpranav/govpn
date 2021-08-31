@@ -11,14 +11,14 @@ import (
 	"github.com/krishpranav/govpn/common/cipher"
 	"github.com/krishpranav/govpn/common/config"
 	"github.com/krishpranav/govpn/common/netutil"
-	"github.com/krishpranav/govpn/tun"
+	"github.com/krishpranav/govpn/vpn"
 	"github.com/patrickmn/go-cache"
 	"github.com/songgao/water"
 	"github.com/songgao/water/waterutil"
 )
 
 func StartWSClient(config config.Config) {
-	iface := tun.CreateTun(config.CIDR)
+	iface := vpn.CreateVpn(config.CIDR)
 	c := cache.New(30*time.Minute, 10*time.Minute)
 	log.Printf("govpn ws client started,CIDR is %v", config.CIDR)
 	packet := make([]byte, 1500)
@@ -47,7 +47,7 @@ func StartWSClient(config config.Config) {
 				continue
 			}
 			c.Set(key, conn, cache.DefaultExpiration)
-			go wsToTun(c, key, conn, iface)
+			go wsToVpn(c, key, conn, iface)
 		}
 		b = cipher.XOR(b)
 		conn.WriteMessage(websocket.BinaryMessage, b)

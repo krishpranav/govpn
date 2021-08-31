@@ -9,14 +9,14 @@ import (
 	"github.com/krishpranav/govpn/common/cipher"
 	"github.com/krishpranav/govpn/common/config"
 	"github.com/krishpranav/govpn/common/netutil"
-	"github.com/krishpranav/govpn/tun"
+	"github.com/krishpranav/govpn/vpn"
 	"github.com/patrickmn/go-cache"
 	"github.com/songgao/water"
 	"github.com/songgao/water/waterutil"
 )
 
 func StartUDPServer(config config.Config) {
-	iface := tun.CreateTun(config.CIDR)
+	iface := vpn.CreateVpn(config.CIDR)
 	localAddr, err := net.ResolveUDPAddr("udp", config.LocalAddr)
 	if err != nil {
 		log.Fatalln("failed to get UDP socket:", err)

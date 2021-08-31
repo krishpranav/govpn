@@ -6,12 +6,12 @@ import (
 
 	"github.com/krishpranav/govpn/common/cipher"
 	"github.com/krishpranav/govpn/common/config"
-	"github.com/krishpranav/govpn/tun"
+	"github.com/krishpranav/govpn/vpn"
 	"github.com/songgao/water/waterutil"
 )
 
 func StartUDPClient(config config.Config) {
-	iface := tun.CreateTun(config.CIDR)
+	iface := vpn.CreateVpn(config.CIDR)
 	serverAddr, err := net.ResolveUDPAddr("udp", config.ServerAddr)
 	if err != nil {
 		log.Fatalln("failed to resolve server addr:", err)

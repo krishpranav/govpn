@@ -13,7 +13,7 @@ import (
 	"github.com/krishpranav/govpn/common/config"
 	"github.com/krishpranav/govpn/common/netutil"
 	"github.com/krishpranav/govpn/register"
-	"github.com/krishpranav/govpn/tun"
+	"github.com/krishpranav/govpn/vpn"
 	"github.com/patrickmn/go-cache"
 	"github.com/songgao/water"
 	"github.com/songgao/water/waterutil"
@@ -30,16 +30,16 @@ var upgrader = websocket.Upgrader{
 
 // StartWSServer start ws server
 func StartWSServer(config config.Config) {
-	iface := tun.CreateTun(config.CIDR)
+	iface := vpn.CreateVpn(config.CIDR)
 	c := cache.New(30*time.Minute, 10*time.Minute)
-	go tunToWs(iface, c)
+	go vpnToWs(iface, c)
 	log.Printf("govpn ws server started on %v,CIDR is %v", config.LocalAddr, config.CIDR)
 	http.HandleFunc("/way-to-freedom", func(w http.ResponseWriter, r *http.Request) {
 		wsConn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			return
 		}
-		wsToTun(wsConn, iface, c)
+		wsToVpn(wsConn, iface, c)
 	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
@@ -109,7 +109,7 @@ func error403(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("403 No Permission"))
 }
 
-func tunToWs(iface *water.Interface, c *cache.Cache) {
+func vpnToWs(iface *water.Interface, c *cache.Cache) {
 	buffer := make([]byte, 1500)
 	for {
 		n, err := iface.Read(buffer)
@@ -133,7 +133,7 @@ func tunToWs(iface *water.Interface, c *cache.Cache) {
 	}
 }
 
-func wsToTun(wsConn *websocket.Conn, iface *water.Interface, c *cache.Cache) {
+func wsToVpn(wsConn *websocket.Conn, iface *water.Interface, c *cache.Cache) {
 	defer netutil.CloseWS(wsConn)
 	for {
 		wsConn.SetReadDeadline(time.Now().Add(time.Duration(30) * time.Second))
