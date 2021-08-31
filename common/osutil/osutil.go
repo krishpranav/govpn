@@ -11,7 +11,7 @@ import (
 	"github.com/songgao/water"
 )
 
-func ConfigTun(cidr string, iface *water.Interface) {
+func ConfigVpn(cidr string, iface *water.Interface) {
 	os := runtime.GOOS
 	ip, ipNet, err := net.ParseCIDR(cidr)
 	if err != nil {
