@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 export GO111MODULE=on
 
 # Linux Build
